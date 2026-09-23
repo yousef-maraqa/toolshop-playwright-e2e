@@ -1,6 +1,6 @@
 # Bugs Found
 
-The following defects were observed while validating the suite against the public application. They are documented without weakening the corresponding tests.
+The following defects were observed while validating the suite against the public application. They are documented without weakening the corresponding tests. The two accessibility findings below are historical observations; the current production and with-bugs runs no longer reproduce them as of 2026-09-23.
 
 ## Serious accessibility violations on the home page
 
@@ -18,24 +18,6 @@ The following defects were observed while validating the suite against the publi
 - **Actual:** A `.btn-outline-secondary` button has no visible text, accessible name, or title, triggering axe rule `button-name` with critical impact.
 - **Caught by:** `tests/a11y/pages.a11y.spec.ts`
 
-## Route mismatch avoided by normal navigation
-
-- **Severity:** Medium
-- **Steps:** Navigate directly to `/#/account` on the current production deployment.
-- **Expected:** The authenticated account overview renders.
-- **Actual:** The catalog remains visible; the working route is `/account`.
-- **Caught during:** Authenticated storage-state validation.
-- **Test response:** Page objects use the deployed normal-path routes and retain a heading assertion.
-
-## Add-to-cart action completion race
-
-- **Severity:** Medium
-- **Steps:** Click Add to cart and immediately navigate to checkout.
-- **Expected:** The newly added item is present in the cart.
-- **Actual:** The UI issues create-cart and add-item requests asynchronously; navigating before the add-item response completes can show an empty cart.
-- **Caught during:** `tests/ui/product-cart.spec.ts`.
-- **Test response:** `ProductPage.addProductToCart()` waits for the specific add-item response without using a hard wait.
-
 ## With-bugs product API violates the documented response contract
 
 - **Severity:** High
@@ -49,7 +31,7 @@ The following defects were observed while validating the suite against the publi
 - **Severity:** High
 - **Steps:** Generate customer storage state, then open `/account` with `ENV=with-bugs`.
 - **Expected:** The authenticated account overview renders a `My account` page title.
-- **Actual:** The expected account content is absent.
+- **Actual:** The route loads without the `My account` heading and account navigation content.
 - **Caught by:** `tests/ui/auth-state.spec.ts` and `tests/ui/page-object-smoke.spec.ts`.
 
 ## With-bugs catalog pagination controls are missing
@@ -65,5 +47,5 @@ The following defects were observed while validating the suite against the publi
 - **Severity:** High
 - **Steps:** Submit valid or invalid credentials through `/auth/login` with `ENV=with-bugs`.
 - **Expected:** Valid credentials navigate to the account page and invalid credentials show an error.
-- **Actual:** The expected login form/API behavior is absent or does not complete within the Playwright action contract.
+- **Actual:** The login form does not expose the expected email field or complete a login API request, so neither success navigation nor the invalid-credential message is rendered.
 - **Caught by:** `tests/ui/login.spec.ts`.

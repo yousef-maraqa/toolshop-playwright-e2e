@@ -43,6 +43,12 @@ flowchart LR
 
 - API login keeps UI tests focused on the behavior under test and avoids repeating a brittle login flow.
 - Storage state is generated per role and ignored by Git.
+- The customer bearer token is fetched once per worker; test-scoped API clients reuse the worker-owned request context and token.
 - No hard waits are used; actions synchronize on navigation, responses, or web-first assertions.
 - Tests that create carts delete them in `finally` blocks through the API.
 - CI uses four Playwright shards and merges blob reports into a single HTML report.
+
+## Lessons learned
+
+- The deployed application uses normal path routing such as `/account`, not hash routes such as `/#/account`. Page objects now follow the deployed route contract.
+- The UI submits create-cart and add-item requests asynchronously. The product action waits for the add-item response so the test does not race the application; this is test synchronization, not an application defect.

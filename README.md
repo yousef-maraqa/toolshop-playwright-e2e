@@ -2,18 +2,20 @@
 
 A production-oriented TypeScript and Playwright foundation for end-to-end testing of [Practice Software Testing](https://practicesoftwaretesting.com).
 
-## Phase 1 status
+![CI](https://github.com/yousef-maraqa/toolshop-playwright-e2e/actions/workflows/ci.yml/badge.svg)
 
-The framework currently covers typed API clients, API-based authentication, reusable page objects and fixtures, UI/API/hybrid checks, and Axe accessibility scans. CI, Docker, and defect documentation are included alongside the test foundation.
+[Live HTML report](https://yousef-maraqa.github.io/toolshop-playwright-e2e/)
+
+The framework covers typed API clients, API-based authentication, reusable page objects and fixtures, UI/API/hybrid checks, accessibility scans, CI, Docker, and defect documentation.
 
 ## Coverage
 
-| Area          | Current coverage                                                                    |
-| ------------- | ----------------------------------------------------------------------------------- |
-| UI            | Login, catalog search/sort/pagination, product details, cart, authenticated account |
-| API           | Authentication, products, search/filtering, cart lifecycle, Zod response validation |
-| Hybrid        | API product data compared with UI detail and cart behavior                          |
-| Accessibility | Home, product, login, and checkout with serious/critical Axe gating                 |
+| Area          | Current coverage                                                                   |
+| ------------- | ---------------------------------------------------------------------------------- |
+| UI            | Login, validation, catalog/filter/sort/pagination, product/cart, checkout, logout  |
+| API           | Authentication, products, brands, search/filtering, cart lifecycle, Zod validation |
+| Hybrid        | Product/cart comparison and admin brand creation with UI verification              |
+| Accessibility | Home, product, login, and checkout with serious/critical Axe gating                |
 
 ## Prerequisites
 
@@ -40,6 +42,8 @@ The default environment is `prod`. Set `ENV` in `.env` to one of:
 
 `AUTH_ROLES` controls which API-authenticated states setup generates. It defaults to `customer`; use `AUTH_ROLES=admin,customer` when admin state is needed.
 
+CI requires repository secrets named `TEST_ADMIN_EMAIL`, `TEST_ADMIN_PASSWORD`, `TEST_CUSTOMER_EMAIL`, and `TEST_CUSTOMER_PASSWORD`. The public demo values are documented in `.env.example`; do not commit `.env`.
+
 ## Commands
 
 ```bash
@@ -48,6 +52,7 @@ npm run test:smoke
 npm run test:smoke -- --project=chromium
 npm run test:ui
 npm run test:api
+npm run test:checkout
 npm run test:a11y
 npm run lint
 npm run typecheck
@@ -70,6 +75,12 @@ ENV=with-bugs npx playwright test --list
 
 Run one browser explicitly with `--project=chromium`, `--project=firefox`, or `--project=webkit`.
 
+Admin hybrid coverage is opt-in:
+
+```powershell
+$env:AUTH_ROLES='admin,customer'; npx playwright test tests/hybrid --project=admin-chromium
+```
+
 Run the suite in Docker with the local environment configured in `.env`:
 
 ```bash
@@ -84,10 +95,17 @@ See [the architecture guide](docs/architecture.md) for layer responsibilities an
 
 Tests use Playwright web-first assertions and user-facing locators. Hard waits are not used. The configured test ID attribute is `data-test`. Tests are designed to run independently and in parallel.
 
-## Roadmap
+## Architecture
 
-- Phase 2: typed API clients and Zod response schemas
-- Phase 3: API-based authentication and storage state
-- Phase 4: page objects, components, and fixtures
-- Phase 5: UI, API, hybrid, and accessibility coverage
-- Phase 6: sharded GitHub Actions workflows and reports
+```mermaid
+flowchart LR
+	T[Tests] --> F[Fixtures]
+	F --> P[Pages and components]
+	F --> A[API clients]
+	P --> UI[Toolshop UI]
+	A --> API[Toolshop API]
+	S[Auth setup] --> SS[Role storage state]
+	SS --> P
+```
+
+See [the architecture guide](docs/architecture.md) for layer responsibilities and design decisions.
