@@ -9,13 +9,7 @@
     "forceConsistentCasingInFileNames": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "types": ["node", "@playwright/test"],
-    "baseUrl": ".",
-    "paths": {
-      "@pages/*": ["src/pages/*"],
-      "@api/*": ["src/api/*"],
-      "@fixtures": ["src/fixtures/index.ts"]
-    }
+    "types": ["node", "@playwright/test"]
   },
   "include": ["playwright.config.ts", "src/**/*.ts", "tests/**/*.ts"]
 }

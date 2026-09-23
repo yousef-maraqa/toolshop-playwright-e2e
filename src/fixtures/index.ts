@@ -1,8 +1,10 @@
 import { test as base } from '@playwright/test';
 
 import { AuthApi } from '../api/AuthApi.js';
+import { BrandsApi } from '../api/BrandsApi.js';
 import { CartApi } from '../api/CartApi.js';
 import { ProductsApi } from '../api/ProductsApi.js';
+import { requiredEnvironmentValue } from '../config/env.js';
 import { currentEnvironment } from '../config/environments.js';
 import { AccountPage } from '../pages/AccountPage.js';
 import { CartPage } from '../pages/CartPage.js';
@@ -14,7 +16,7 @@ import { ProductPage } from '../pages/ProductPage.js';
 export type ToolshopFixtures = {
   accountPage: AccountPage;
   authApi: AuthApi;
-  cartApi: CartApi;
+  brandsApi: BrandsApi;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
   homePage: HomePage;
@@ -23,17 +25,38 @@ export type ToolshopFixtures = {
   productsApi: ProductsApi;
 };
 
-export const test = base.extend<ToolshopFixtures>({
+type ToolshopWorkerFixtures = {
+  cartApi: CartApi;
+};
+
+export const test = base.extend<ToolshopFixtures, ToolshopWorkerFixtures>({
   accountPage: async ({ page }, use) => use(new AccountPage(page)),
   authApi: async ({ request }, use) => use(new AuthApi(request, currentEnvironment.apiUrl)),
-  cartApi: async ({ request, authApi }, use) => {
+  brandsApi: async ({ request }, use) => {
+    const authApi = new AuthApi(request, currentEnvironment.apiUrl);
     const login = await authApi.login(
-      requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'),
-      requiredEnvironmentValue('TEST_CUSTOMER_PASSWORD'),
+      requiredEnvironmentValue('TEST_ADMIN_EMAIL'),
+      requiredEnvironmentValue('TEST_ADMIN_PASSWORD'),
     );
 
-    await use(new CartApi(request, currentEnvironment.apiUrl, login.access_token));
+    await use(new BrandsApi(request, currentEnvironment.apiUrl, login.access_token));
   },
+  cartApi: [
+    async ({ playwright }, use) => {
+      const workerRequest = await playwright.request.newContext({
+        baseURL: currentEnvironment.apiUrl,
+      });
+      const authApi = new AuthApi(workerRequest, currentEnvironment.apiUrl);
+      const login = await authApi.login(
+        requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'),
+        requiredEnvironmentValue('TEST_CUSTOMER_PASSWORD'),
+      );
+
+      await use(new CartApi(workerRequest, currentEnvironment.apiUrl, login.access_token));
+      await workerRequest.dispose();
+    },
+    { scope: 'worker' },
+  ],
   cartPage: async ({ page }, use) => use(new CartPage(page)),
   checkoutPage: async ({ page }, use) => use(new CheckoutPage(page)),
   homePage: async ({ page }, use) => use(new HomePage(page)),
@@ -41,15 +64,5 @@ export const test = base.extend<ToolshopFixtures>({
   productPage: async ({ page }, use) => use(new ProductPage(page)),
   productsApi: async ({ request }, use) => use(new ProductsApi(request, currentEnvironment.apiUrl)),
 });
-
-function requiredEnvironmentValue(name: string): string {
-  const value = process.env[name];
-
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-
-  return value;
-}
 
 export { expect } from '@playwright/test';

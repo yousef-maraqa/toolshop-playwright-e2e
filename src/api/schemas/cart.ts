@@ -12,7 +12,7 @@ const cartProductSchema = z
     in_stock: z.boolean(),
     is_eco_friendly: z.boolean(),
   })
-  .passthrough();
+  .loose();
 
 export const cartItemSchema = z
   .object({
@@ -23,7 +23,7 @@ export const cartItemSchema = z
     product_id: z.string(),
     product: cartProductSchema,
   })
-  .passthrough();
+  .loose();
 
 export const cartSchema = z
   .object({
@@ -33,13 +33,13 @@ export const cartSchema = z
     lng: z.number().nullable().optional(),
     cart_items: z.array(cartItemSchema).optional(),
   })
-  .passthrough();
+  .loose();
 
 export const cartItemAddedSchema = z
   .object({
     result: z.string(),
   })
-  .passthrough();
+  .loose();
 
 export type Cart = z.infer<typeof cartSchema>;
 export type CartItem = z.infer<typeof cartItemSchema>;

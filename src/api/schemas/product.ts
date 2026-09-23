@@ -6,7 +6,7 @@ export const brandSchema = z
     name: z.string(),
     slug: z.string().optional(),
   })
-  .passthrough();
+  .loose();
 
 export const categorySchema = z
   .object({
@@ -15,7 +15,7 @@ export const categorySchema = z
     slug: z.string().optional(),
     parent_id: z.string().nullable().optional(),
   })
-  .passthrough();
+  .loose();
 
 export const productImageSchema = z
   .object({
@@ -27,7 +27,7 @@ export const productImageSchema = z
     file_name: z.string(),
     title: z.string(),
   })
-  .passthrough();
+  .loose();
 
 export const productSchema = z
   .object({
@@ -44,14 +44,14 @@ export const productSchema = z
     category: categorySchema,
     brand: brandSchema,
   })
-  .passthrough();
+  .loose();
 
 export const productListSchema = z
   .object({
     current_page: z.number().int().positive(),
     data: z.array(productSchema),
   })
-  .passthrough();
+  .loose();
 
 export type Brand = z.infer<typeof brandSchema>;
 export type Category = z.infer<typeof categorySchema>;

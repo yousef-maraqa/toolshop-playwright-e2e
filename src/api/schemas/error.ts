@@ -5,6 +5,6 @@ export const errorResponseSchema = z
     message: z.string().optional(),
     errors: z.record(z.string(), z.array(z.string())).optional(),
   })
-  .passthrough();
+  .loose();
 
 export type ErrorResponse = z.infer<typeof errorResponseSchema>;

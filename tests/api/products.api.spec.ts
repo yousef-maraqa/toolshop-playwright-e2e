@@ -1,12 +1,8 @@
-import { expect, test } from '@playwright/test';
-
-import { ProductsApi } from '../../src/api/ProductsApi.js';
-import { currentEnvironment } from '../../src/config/environments.js';
+import { expect, test } from '../../src/fixtures/index.js';
 
 test('products API supports list, detail, search, and category filtering @api @smoke', async ({
-  request,
+  productsApi,
 }) => {
-  const productsApi = new ProductsApi(request, currentEnvironment.apiUrl);
   const products = await productsApi.list({ page: 1 });
   const firstProduct = products.data[0];
 

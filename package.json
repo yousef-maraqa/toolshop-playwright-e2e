@@ -5,8 +5,9 @@
   "scripts": {
     "test": "playwright test",
     "test:smoke": "playwright test --grep @smoke",
-    "test:ui": "playwright test --grep @ui --pass-with-no-tests",
-    "test:api": "playwright test --grep @api --pass-with-no-tests",
+    "test:ui": "playwright test --grep @ui",
+    "test:api": "playwright test --grep @api",
+    "test:checkout": "playwright test tests/ui/checkout.spec.ts --project=chromium",
     "test:a11y": "playwright test --grep @a11y",
     "lint": "eslint . --report-unused-disable-directives --max-warnings 0",
     "format": "prettier --write .",
@@ -19,7 +20,7 @@
     "e2e",
     "test-automation"
   ],
-  "author": "",
+  "author": "Yousef Maraqa",
   "license": "MIT",
   "type": "module",
   "devDependencies": {

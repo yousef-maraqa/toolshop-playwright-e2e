@@ -1,6 +1,6 @@
 import type { APIRequestContext } from '@playwright/test';
 
-import { BaseApi, emptyResponseSchema } from './BaseApi.js';
+import { BaseApi } from './BaseApi.js';
 import { cartItemAddedSchema, cartSchema, type Cart, type CartItemAdded } from './schemas/cart.js';
 
 export class CartApi extends BaseApi {
@@ -32,6 +32,6 @@ export class CartApi extends BaseApi {
 
   /** Deletes an authenticated cart by its identifier. */
   public async deleteCart(cartId: string): Promise<void> {
-    return this.requestJson('DELETE', `/carts/${cartId}`, emptyResponseSchema);
+    return this.requestNoContent('DELETE', `/carts/${cartId}`);
   }
 }

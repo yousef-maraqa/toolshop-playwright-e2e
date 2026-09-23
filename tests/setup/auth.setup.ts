@@ -2,6 +2,7 @@ import { expect, test as setup } from '@playwright/test';
 
 import { AuthApi } from '../../src/api/AuthApi.js';
 import { authStateFiles } from '../../src/config/auth.js';
+import { requiredEnvironmentValue } from '../../src/config/env.js';
 import { currentEnvironment } from '../../src/config/environments.js';
 
 const roles = [
@@ -26,16 +27,6 @@ const selectedRoles = roles.filter((role) => requestedRoles.has(role.name));
 
 if (selectedRoles.length === 0) {
   throw new Error('AUTH_ROLES must include at least one supported role: admin or customer');
-}
-
-function requiredEnvironmentValue(name: string): string {
-  const value = process.env[name];
-
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-
-  return value;
 }
 
 for (const role of selectedRoles) {

@@ -6,6 +6,6 @@ export const loginResponseSchema = z
     token_type: z.string().min(1),
     expires_in: z.number().int().positive(),
   })
-  .passthrough();
+  .loose();
 
 export type LoginResponse = z.infer<typeof loginResponseSchema>;
