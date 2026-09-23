@@ -4,7 +4,16 @@ A production-oriented TypeScript and Playwright foundation for end-to-end testin
 
 ## Phase 1 status
 
-This phase provides the environment-aware Playwright configuration, strict TypeScript setup, linting, formatting, browser projects, and a minimal smoke test. Page objects, API clients, fixtures, authentication, CI, and the broader test suites are added in later phases.
+The framework currently covers typed API clients, API-based authentication, reusable page objects and fixtures, UI/API/hybrid checks, and Axe accessibility scans. CI, Docker, and defect documentation are included alongside the test foundation.
+
+## Coverage
+
+| Area          | Current coverage                                                                    |
+| ------------- | ----------------------------------------------------------------------------------- |
+| UI            | Login, catalog search/sort/pagination, product details, cart, authenticated account |
+| API           | Authentication, products, search/filtering, cart lifecycle, Zod response validation |
+| Hybrid        | API product data compared with UI detail and cart behavior                          |
+| Accessibility | Home, product, login, and checkout with serious/critical Axe gating                 |
 
 ## Prerequisites
 
@@ -37,6 +46,7 @@ npm run test:smoke
 npm run test:smoke -- --project=chromium
 npm run test:ui
 npm run test:api
+npm run test:a11y
 npm run lint
 npm run typecheck
 npm run format:check
@@ -57,6 +67,16 @@ ENV=with-bugs npx playwright test --list
 ```
 
 Run one browser explicitly with `--project=chromium`, `--project=firefox`, or `--project=webkit`.
+
+Run the suite in Docker with the local environment configured in `.env`:
+
+```bash
+docker compose run --rm tests
+```
+
+For a local Toolshop Docker stack, set `ENV=local` and start the application services before running the tests.
+
+See [the architecture guide](docs/architecture.md) for layer responsibilities and [the defect report](docs/bugs-found.md) for findings from the intentional-bugs and accessibility runs.
 
 ## Test conventions
 

@@ -15,6 +15,7 @@ export default tseslint.config(
     },
     rules: {
       ...playwright.configs.recommended.rules,
+      'playwright/expect-expect': ['warn', { assertFunctionNames: ['expectNoSeriousViolations'] }],
     },
   },
 );

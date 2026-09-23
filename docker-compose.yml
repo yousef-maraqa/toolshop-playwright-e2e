@@ -1,0 +1,10 @@
+services:
+  tests:
+    build: .
+    working_dir: /workspace
+    env_file:
+      - .env
+    command: npx playwright test
+    volumes:
+      - ./playwright-report:/workspace/playwright-report
+      - ./test-results:/workspace/test-results

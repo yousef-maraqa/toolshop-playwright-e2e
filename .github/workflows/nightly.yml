@@ -1,0 +1,56 @@
+name: Nightly regression
+
+on:
+  schedule:
+    - cron: '0 2 * * *'
+  workflow_dispatch:
+
+env:
+  TEST_ADMIN_EMAIL: ${{ secrets.TEST_ADMIN_EMAIL }}
+  TEST_ADMIN_PASSWORD: ${{ secrets.TEST_ADMIN_PASSWORD }}
+  TEST_CUSTOMER_EMAIL: ${{ secrets.TEST_CUSTOMER_EMAIL }}
+  TEST_CUSTOMER_PASSWORD: ${{ secrets.TEST_CUSTOMER_PASSWORD }}
+
+jobs:
+  prod:
+    name: Full suite on prod
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+        env:
+          ENV: prod
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-prod-report
+          path: playwright-report
+          retention-days: 14
+
+  with-bugs:
+    name: Full suite on with-bugs
+    continue-on-error: true
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v5
+      - uses: actions/setup-node@v5
+        with:
+          node-version: 24
+          cache: npm
+      - run: npm ci
+      - run: npx playwright install --with-deps
+      - run: npx playwright test
+        env:
+          ENV: with-bugs
+      - if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: nightly-with-bugs-report
+          path: playwright-report
+          retention-days: 14

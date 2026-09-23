@@ -1,5 +1,6 @@
 import { defineConfig, devices } from '@playwright/test';
 
+import { authStateFiles } from './src/config/auth.js';
 import { currentEnvironment } from './src/config/environments.js';
 
 export default defineConfig({
@@ -17,8 +18,27 @@ export default defineConfig({
     video: 'retain-on-failure',
   },
   projects: [
-    { name: 'chromium', use: { ...devices['Desktop Chrome'] } },
-    { name: 'firefox', use: { ...devices['Desktop Firefox'] } },
-    { name: 'webkit', use: { ...devices['Desktop Safari'] } },
+    {
+      name: 'setup',
+      testMatch: /.*\.setup\.ts/,
+    },
+    {
+      name: 'chromium',
+      dependencies: ['setup'],
+      testIgnore: /.*\.setup\.ts/,
+      use: { ...devices['Desktop Chrome'], storageState: authStateFiles.customer },
+    },
+    {
+      name: 'firefox',
+      dependencies: ['setup'],
+      testIgnore: /.*\.setup\.ts/,
+      use: { ...devices['Desktop Firefox'], storageState: authStateFiles.customer },
+    },
+    {
+      name: 'webkit',
+      dependencies: ['setup'],
+      testIgnore: /.*\.setup\.ts/,
+      use: { ...devices['Desktop Safari'], storageState: authStateFiles.customer },
+    },
   ],
 });
