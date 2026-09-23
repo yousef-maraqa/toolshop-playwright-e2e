@@ -3,6 +3,8 @@ import { defineConfig, devices } from '@playwright/test';
 import { authStateFiles } from './src/config/auth.js';
 import { currentEnvironment } from './src/config/environments.js';
 
+const adminEnabled = (process.env.AUTH_ROLES ?? 'customer').split(',').includes('admin');
+
 export default defineConfig({
   testDir: './tests',
   fullyParallel: true,
@@ -25,6 +27,7 @@ export default defineConfig({
     {
       name: 'api',
       testMatch: /.*\.api\.spec\.ts/,
+      use: { baseURL: currentEnvironment.apiUrl },
     },
     {
       name: 'chromium',
@@ -44,5 +47,15 @@ export default defineConfig({
       testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
       use: { ...devices['Desktop Safari'], storageState: authStateFiles.customer },
     },
+    ...(adminEnabled
+      ? [
+          {
+            name: 'admin-chromium',
+            dependencies: ['setup'],
+            testMatch: /.*admin.*\.spec\.ts/,
+            use: { ...devices['Desktop Chrome'], storageState: authStateFiles.admin },
+          },
+        ]
+      : []),
   ],
 });
