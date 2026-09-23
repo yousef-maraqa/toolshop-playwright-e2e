@@ -10,7 +10,7 @@ export class LoginPage {
     this.form = page.getByTestId('login-form');
     this.email = page.getByTestId('email');
     this.password = page.getByTestId('password');
-    this.submit = page.getByTestId('login-submit');
+    this.submit = page.getByRole('button', { name: 'Login' });
   }
 
   /** Navigates to the customer login route. */

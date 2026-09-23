@@ -1,4 +1,5 @@
 import { expect, test } from '../../src/fixtures/index.js';
+import { requiredEnvironmentValue } from '../../src/config/env.js';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
@@ -19,12 +20,10 @@ test('invalid credentials show a login error @ui @regression', async ({ loginPag
   await expect(loginPage.page.getByText(/invalid email or password|unauthorized/i)).toBeVisible();
 });
 
-function requiredEnvironmentValue(name: string): string {
-  const value = process.env[name];
+test('empty login fields show validation state @ui @regression', async ({ loginPage }) => {
+  await loginPage.goto();
+  await loginPage.submit.click();
 
-  if (!value) {
-    throw new Error(`Missing required environment variable: ${name}`);
-  }
-
-  return value;
-}
+  await expect(loginPage.email).toHaveClass(/is-invalid/);
+  await expect(loginPage.password).toHaveClass(/is-invalid/);
+});

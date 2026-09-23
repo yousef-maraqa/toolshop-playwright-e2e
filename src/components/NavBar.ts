@@ -24,6 +24,6 @@ export class NavBar {
   /** Logs out through the navigation menu. */
   public async logout(): Promise<void> {
     await this.menu.click();
-    await this.page.getByTestId('nav-logout').click();
+    await this.page.getByTestId('nav-sign-out').click();
   }
 }

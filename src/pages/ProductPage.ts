@@ -14,7 +14,7 @@ export class ProductPage {
     this.quantity = page.getByTestId('quantity');
     this.increaseQuantity = page.getByTestId('increase-quantity');
     this.decreaseQuantity = page.getByTestId('decrease-quantity');
-    this.addToCart = page.getByTestId('add-to-cart');
+    this.addToCart = page.getByRole('button', { name: /add to cart/i });
   }
 
   /** Navigates to a product detail route. */
