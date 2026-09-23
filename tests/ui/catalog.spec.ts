@@ -11,9 +11,16 @@ test('catalog sorts prices and advances pagination @ui @regression', async ({ ho
   await homePage.goto();
   await homePage.filterSidebar.sort.selectOption({ label: 'Price (Low - High)' });
 
-  const prices = await page.getByTestId('product-price').allTextContents();
-  const numericPrices = prices.map((price) => Number.parseFloat(price.replace('$', '')));
-  expect(numericPrices).toEqual([...numericPrices].sort((first, second) => first - second));
+  await expect
+    .poll(async () => {
+      const prices = await page.getByTestId('product-price').allTextContents();
+      const numericPrices = prices.map((price) => Number.parseFloat(price.replace('$', '')));
+
+      return numericPrices.every(
+        (price, index) => index === 0 || numericPrices[index - 1] <= price,
+      );
+    })
+    .toBe(true);
   await expect(homePage.nextPage).toBeVisible();
   await expect(homePage.previousPage).toBeVisible();
   const firstPageProduct = await homePage.productCard(0).name.textContent();

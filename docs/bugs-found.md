@@ -1,6 +1,10 @@
 # Bugs Found
 
-The following defects were observed while validating the suite against the public application. They are documented without weakening the corresponding tests. The two accessibility findings below are historical observations; the current production and with-bugs runs no longer reproduce them as of 2026-09-23.
+The following defects were observed while validating the suite against the public application. They are documented without weakening the corresponding tests.
+
+## Resolved / historical findings
+
+The two accessibility findings below were observed earlier; current production and with-bugs runs no longer reproduce them as of 2026-09-23.
 
 ## Serious accessibility violations on the home page
 

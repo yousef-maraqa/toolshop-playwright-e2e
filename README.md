@@ -1,6 +1,6 @@
 # Toolshop Playwright E2E
 
-A production-oriented TypeScript and Playwright foundation for end-to-end testing of [Practice Software Testing](https://practicesoftwaretesting.com).
+A production-oriented TypeScript and Playwright framework for end-to-end testing of [Practice Software Testing](https://practicesoftwaretesting.com).
 
 ![CI](https://github.com/yousef-maraqa/toolshop-playwright-e2e/actions/workflows/ci.yml/badge.svg)
 

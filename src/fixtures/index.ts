@@ -3,6 +3,7 @@ import { test as base } from '@playwright/test';
 import { AuthApi } from '../api/AuthApi.js';
 import { BrandsApi } from '../api/BrandsApi.js';
 import { CartApi } from '../api/CartApi.js';
+import { CategoriesApi } from '../api/CategoriesApi.js';
 import { ProductsApi } from '../api/ProductsApi.js';
 import { requiredEnvironmentValue } from '../config/env.js';
 import { currentEnvironment } from '../config/environments.js';
@@ -17,6 +18,7 @@ export type ToolshopFixtures = {
   accountPage: AccountPage;
   authApi: AuthApi;
   brandsApi: BrandsApi;
+  categoriesApi: CategoriesApi;
   cartPage: CartPage;
   checkoutPage: CheckoutPage;
   homePage: HomePage;
@@ -41,6 +43,8 @@ export const test = base.extend<ToolshopFixtures, ToolshopWorkerFixtures>({
 
     await use(new BrandsApi(request, currentEnvironment.apiUrl, login.access_token));
   },
+  categoriesApi: async ({ request }, use) =>
+    use(new CategoriesApi(request, currentEnvironment.apiUrl)),
   cartApi: [
     async ({ playwright }, use) => {
       const workerRequest = await playwright.request.newContext({

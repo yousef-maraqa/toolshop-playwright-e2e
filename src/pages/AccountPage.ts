@@ -9,7 +9,7 @@ export class AccountPage {
   public readonly navBar: NavBar;
 
   public constructor(private readonly page: Page) {
-    this.pageTitle = page.getByTestId('page-title');
+    this.pageTitle = page.getByRole('heading', { name: 'My account' });
     this.profileLink = page.getByTestId('nav-profile');
     this.favoritesLink = page.getByTestId('nav-favorites');
     this.navBar = new NavBar(page);

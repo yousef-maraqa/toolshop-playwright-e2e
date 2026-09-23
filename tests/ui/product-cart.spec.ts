@@ -1,4 +1,5 @@
 import { expect, test } from '../../src/fixtures/index.js';
+import { deleteCartIfPresent } from '../../src/utils/cleanup.js';
 
 test('API product data matches the UI and can be added to cart @ui @hybrid @smoke', async ({
   productsApi,
@@ -19,6 +20,6 @@ test('API product data matches the UI and can be added to cart @ui @hybrid @smok
     await cartPage.goto();
     await expect(cartPage.productTitles).toContainText(product.name);
   } finally {
-    await cartApi.deleteCart(cartId);
+    await deleteCartIfPresent(cartApi, cartId);
   }
 });

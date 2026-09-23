@@ -32,19 +32,19 @@ export default defineConfig({
     {
       name: 'chromium',
       dependencies: ['setup'],
-      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
+      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/, /.*admin.*\.spec\.ts/],
       use: { ...devices['Desktop Chrome'], storageState: authStateFiles.customer },
     },
     {
       name: 'firefox',
       dependencies: ['setup'],
-      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
+      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/, /.*admin.*\.spec\.ts/],
       use: { ...devices['Desktop Firefox'], storageState: authStateFiles.customer },
     },
     {
       name: 'webkit',
       dependencies: ['setup'],
-      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
+      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/, /.*admin.*\.spec\.ts/],
       use: { ...devices['Desktop Safari'], storageState: authStateFiles.customer },
     },
     ...(adminEnabled

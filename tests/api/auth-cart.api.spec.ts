@@ -1,5 +1,6 @@
 import { expect, test } from '../../src/fixtures/index.js';
 import { requiredEnvironmentValue } from '../../src/config/env.js';
+import { deleteCartIfPresent } from '../../src/utils/cleanup.js';
 
 test('authenticated API supports login and cart lifecycle @api @regression', async ({
   authApi,
@@ -21,6 +22,6 @@ test('authenticated API supports login and cart lifecycle @api @regression', asy
     const loadedCart = await cartApi.getCart(cart.id);
     expect(loadedCart.cart_items?.some((item) => item.product_id === product.id)).toBe(true);
   } finally {
-    await cartApi.deleteCart(cart.id);
+    await deleteCartIfPresent(cartApi, cart.id);
   }
 });

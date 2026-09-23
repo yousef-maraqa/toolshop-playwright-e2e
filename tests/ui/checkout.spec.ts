@@ -1,5 +1,6 @@
 import { expect, test } from '../../src/fixtures/index.js';
 import { buildBillingAddress } from '../../src/data/factories.js';
+import { deleteCartIfPresent } from '../../src/utils/cleanup.js';
 
 test('customer can complete checkout with cash on delivery @ui @regression @smoke', async ({
   productsApi,
@@ -26,6 +27,6 @@ test('customer can complete checkout with cash on delivery @ui @regression @smok
     await checkoutPage.placeOrderNow();
     await expect(checkoutPage.paymentSuccess).toBeVisible();
   } finally {
-    await cartApi.deleteCart(cartId);
+    await deleteCartIfPresent(cartApi, cartId);
   }
 });
