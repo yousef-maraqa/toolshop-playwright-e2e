@@ -19,6 +19,15 @@ const roles = [
   },
 ] as const;
 
+const requestedRoles = new Set(
+  (process.env.AUTH_ROLES ?? 'customer').split(',').map((role) => role.trim()),
+);
+const selectedRoles = roles.filter((role) => requestedRoles.has(role.name));
+
+if (selectedRoles.length === 0) {
+  throw new Error('AUTH_ROLES must include at least one supported role: admin or customer');
+}
+
 function requiredEnvironmentValue(name: string): string {
   const value = process.env[name];
 
@@ -29,7 +38,7 @@ function requiredEnvironmentValue(name: string): string {
   return value;
 }
 
-for (const role of roles) {
+for (const role of selectedRoles) {
   setup(`${role.name} authentication`, async ({ page, request }) => {
     const authApi = new AuthApi(request, currentEnvironment.apiUrl);
     const login = await authApi.login(

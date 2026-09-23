@@ -38,6 +38,8 @@ The default environment is `prod`. Set `ENV` in `.env` to one of:
 - `sprint4`
 - `local`
 
+`AUTH_ROLES` controls which API-authenticated states setup generates. It defaults to `customer`; use `AUTH_ROLES=admin,customer` when admin state is needed.
+
 ## Commands
 
 ```bash

@@ -1,6 +1,8 @@
 import type { APIRequestContext, APIResponse } from '@playwright/test';
 import { z, type ZodType } from 'zod';
 
+import { errorResponseSchema } from './schemas/error.js';
+
 export class ApiRequestError extends Error {
   public constructor(
     public readonly status: number,
@@ -29,7 +31,7 @@ export abstract class BaseApi {
     const body = await this.readBody(response);
 
     if (!response.ok()) {
-      throw new ApiRequestError(response.status(), body);
+      throw new ApiRequestError(response.status(), this.parseErrorBody(body));
     }
 
     return schema.parse(body);
@@ -45,7 +47,7 @@ export abstract class BaseApi {
     const body = await this.readBody(response);
 
     if (!response.ok()) {
-      throw new ApiRequestError(response.status(), body);
+      throw new ApiRequestError(response.status(), this.parseErrorBody(body));
     }
   }
 
@@ -87,6 +89,11 @@ export abstract class BaseApi {
     } catch {
       return text;
     }
+  }
+
+  private parseErrorBody(body: unknown): unknown {
+    const parsed = errorResponseSchema.safeParse(body);
+    return parsed.success ? parsed.data : body;
   }
 }
 

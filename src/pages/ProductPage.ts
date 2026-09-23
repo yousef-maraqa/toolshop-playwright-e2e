@@ -38,4 +38,15 @@ export class ProductPage {
     await this.addToCart.click();
     await addItemResponse;
   }
+
+  /** Returns the authenticated cart identifier created by the UI. */
+  public async getCartId(): Promise<string> {
+    const cartId = await this.page.evaluate(() => sessionStorage.getItem('cart_id'));
+
+    if (!cartId) {
+      throw new Error('The UI did not create a cart identifier after adding the product.');
+    }
+
+    return cartId;
+  }
 }

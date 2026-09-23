@@ -9,7 +9,7 @@ export default defineConfig({
   forbidOnly: Boolean(process.env.CI),
   retries: process.env.CI ? 2 : 0,
   workers: process.env.CI ? 1 : undefined,
-  reporter: [['list'], ['html', { open: 'never' }]],
+  reporter: process.env.CI ? [['blob'], ['list']] : [['list'], ['html', { open: 'never' }]],
   use: {
     baseURL: currentEnvironment.uiUrl,
     testIdAttribute: 'data-test',
@@ -23,21 +23,25 @@ export default defineConfig({
       testMatch: /.*\.setup\.ts/,
     },
     {
+      name: 'api',
+      testMatch: /.*\.api\.spec\.ts/,
+    },
+    {
       name: 'chromium',
       dependencies: ['setup'],
-      testIgnore: /.*\.setup\.ts/,
+      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
       use: { ...devices['Desktop Chrome'], storageState: authStateFiles.customer },
     },
     {
       name: 'firefox',
       dependencies: ['setup'],
-      testIgnore: /.*\.setup\.ts/,
+      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
       use: { ...devices['Desktop Firefox'], storageState: authStateFiles.customer },
     },
     {
       name: 'webkit',
       dependencies: ['setup'],
-      testIgnore: /.*\.setup\.ts/,
+      testIgnore: [/.*\.setup\.ts/, /.*\.api\.spec\.ts/],
       use: { ...devices['Desktop Safari'], storageState: authStateFiles.customer },
     },
   ],

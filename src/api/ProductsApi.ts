@@ -20,6 +20,10 @@ export interface ProductListOptions {
   isRental?: boolean;
 }
 
+export interface ProductSearchOptions {
+  page?: number;
+}
+
 export class ProductsApi extends BaseApi {
   public constructor(request: APIRequestContext, baseUrl: string, token?: string) {
     super(request, baseUrl, token);
@@ -56,15 +60,10 @@ export class ProductsApi extends BaseApi {
   }
 
   /** Searches products by the API search query. */
-  public async search(
-    query: string,
-    options: Omit<ProductListOptions, 'categoryId' | 'brandId'> = {},
-  ): Promise<ProductList> {
+  public async search(query: string, options: ProductSearchOptions = {}): Promise<ProductList> {
     const params = new URLSearchParams({ q: query });
 
     if (options.page !== undefined) params.set('page', String(options.page));
-    if (options.size !== undefined) params.set('size', String(options.size));
-    if (options.sort !== undefined) params.set('sort', options.sort);
 
     return this.requestJson('GET', `/products/search?${params.toString()}`, productListSchema);
   }

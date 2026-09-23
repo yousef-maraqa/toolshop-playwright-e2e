@@ -4,6 +4,7 @@ test('API product data matches the UI and can be added to cart @ui @hybrid @smok
   productsApi,
   productPage,
   cartPage,
+  cartApi,
 }) => {
   const product = (await productsApi.list({ page: 1 })).data[0];
 
@@ -12,7 +13,12 @@ test('API product data matches the UI and can be added to cart @ui @hybrid @smok
   await expect(productPage.price).toContainText(product.price.toFixed(2));
 
   await productPage.addProductToCart();
-  await cartPage.goto();
+  const cartId = await productPage.getCartId();
 
-  await expect(cartPage.productTitles).toContainText(product.name);
+  try {
+    await cartPage.goto();
+    await expect(cartPage.productTitles).toContainText(product.name);
+  } finally {
+    await cartApi.deleteCart(cartId);
+  }
 });
