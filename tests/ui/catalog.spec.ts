@@ -4,20 +4,28 @@ test('catalog search renders matching products @ui @smoke', async ({ homePage })
   await homePage.goto();
   await homePage.search('pliers');
 
-  await expect(homePage.productCard(0).name).toContainText(/pliers/i);
+  await expect(homePage.searchTerm).toHaveText('pliers');
+  await expect
+    .poll(async () => {
+      const names = await homePage.productNames.allTextContents();
+
+      return names.length > 0 && names.every((name) => /pliers/i.test(name));
+    })
+    .toBe(true);
 });
 
-test('catalog sorts prices and advances pagination @ui @regression', async ({ homePage, page }) => {
+test('catalog sorts prices and advances pagination @ui @regression', async ({ homePage }) => {
   await homePage.goto();
   await homePage.filterSidebar.sort.selectOption({ label: 'Price (Low - High)' });
 
   await expect
     .poll(async () => {
-      const prices = await page.getByTestId('product-price').allTextContents();
-      const numericPrices = prices.map((price) => Number.parseFloat(price.replace('$', '')));
+      const prices = await homePage.productPrices.allTextContents();
+      const numericPrices = prices.map((price) => Number.parseFloat(price.replace(/[^\d.]/g, '')));
 
-      return numericPrices.every(
-        (price, index) => index === 0 || numericPrices[index - 1] <= price,
+      return (
+        numericPrices.length > 0 &&
+        numericPrices.every((price, index) => index === 0 || numericPrices[index - 1] <= price)
       );
     })
     .toBe(true);

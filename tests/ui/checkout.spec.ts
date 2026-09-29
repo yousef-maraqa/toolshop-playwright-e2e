@@ -25,7 +25,7 @@ test('customer can complete checkout with cash on delivery @ui @regression @smok
     await checkoutPage.continueFromAddress();
     await checkoutPage.selectPaymentMethod('cash-on-delivery');
     await checkoutPage.placeOrderNow();
-    await expect(checkoutPage.paymentSuccess).toBeVisible();
+    await expect(checkoutPage.orderConfirmation).toContainText(/INV-\d+/);
   } finally {
     await deleteCartIfPresent(cartApi, cartId);
   }

@@ -1,3 +1,5 @@
+import { faker } from '@faker-js/faker';
+
 import { expect, test } from '../../src/fixtures/index.js';
 import { requiredEnvironmentValue } from '../../src/config/env.js';
 
@@ -13,9 +15,10 @@ test('customer can log in through the UI @ui @regression', async ({ loginPage })
   await expect(loginPage.page).toHaveURL(/account/);
 });
 
+// An unknown email keeps failed attempts from locking the shared customer account.
 test('invalid credentials show a login error @ui @regression', async ({ loginPage }) => {
   await loginPage.goto();
-  await loginPage.login(requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'), 'invalid-password');
+  await loginPage.login(faker.internet.email(), 'invalid-password');
 
   await expect(loginPage.page.getByText(/invalid email or password|unauthorized/i)).toBeVisible();
 });

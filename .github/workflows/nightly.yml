@@ -24,9 +24,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps
-      - run: npx playwright test
+      - run: npx playwright test --reporter=list,html
         env:
           ENV: prod
+          PLAYWRIGHT_HTML_OPEN: never
       - if: always()
         uses: actions/upload-artifact@v4
         with:
@@ -46,9 +47,10 @@ jobs:
           cache: npm
       - run: npm ci
       - run: npx playwright install --with-deps
-      - run: npx playwright test
+      - run: npx playwright test --reporter=list,html
         env:
           ENV: with-bugs
+          PLAYWRIGHT_HTML_OPEN: never
       - if: always()
         uses: actions/upload-artifact@v4
         with:

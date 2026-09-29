@@ -4,11 +4,13 @@ export class NavBar {
   public readonly menu: Locator;
   public readonly cartLink: Locator;
   public readonly accountLink: Locator;
+  public readonly signInLink: Locator;
 
   public constructor(private readonly page: Page) {
     this.menu = page.getByTestId('nav-menu');
     this.cartLink = page.getByTestId('nav-cart');
-    this.accountLink = page.getByTestId('nav-account');
+    this.accountLink = page.getByTestId('nav-my-account');
+    this.signInLink = page.getByTestId('nav-sign-in');
   }
 
   /** Opens the cart from the application navigation. */
@@ -18,6 +20,7 @@ export class NavBar {
 
   /** Opens the authenticated account overview from the application navigation. */
   public async openAccount(): Promise<void> {
+    await this.menu.click();
     await this.accountLink.click();
   }
 

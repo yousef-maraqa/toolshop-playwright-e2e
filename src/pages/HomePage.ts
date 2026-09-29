@@ -6,6 +6,9 @@ import { ProductCard } from '../components/ProductCard.js';
 
 export class HomePage {
   public readonly searchInput: Locator;
+  public readonly searchTerm: Locator;
+  public readonly productNames: Locator;
+  public readonly productPrices: Locator;
   public readonly nextPage: Locator;
   public readonly previousPage: Locator;
   public readonly filterSidebar: FilterSidebar;
@@ -13,6 +16,9 @@ export class HomePage {
 
   public constructor(private readonly page: Page) {
     this.searchInput = page.getByTestId('search-query');
+    this.searchTerm = page.getByTestId('search-term');
+    this.productNames = page.getByTestId('product-name');
+    this.productPrices = page.getByTestId('product-price');
     this.nextPage = page.getByTestId('pagination-next');
     this.previousPage = page.getByTestId('pagination-prev');
     this.filterSidebar = new FilterSidebar(page);

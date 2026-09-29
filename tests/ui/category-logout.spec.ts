@@ -35,6 +35,7 @@ test.describe('isolated logout', () => {
     await accountPage.goto();
     await accountPage.navBar.logout();
 
-    await expect(accountPage.navBar.accountLink).toBeHidden();
+    await expect(accountPage.navBar.signInLink).toBeVisible();
+    await expect(accountPage.navBar.menu).toBeHidden();
   });
 });
