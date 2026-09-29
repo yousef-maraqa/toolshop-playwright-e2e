@@ -8,8 +8,8 @@ export class LoginPage {
 
   public constructor(public readonly page: Page) {
     this.form = page.getByTestId('login-form');
-    this.email = page.getByLabel('Email');
-    this.password = page.getByLabel('Password');
+    this.email = page.getByTestId('email');
+    this.password = page.getByTestId('password');
     this.submit = page.getByRole('button', { name: 'Login' });
   }
 

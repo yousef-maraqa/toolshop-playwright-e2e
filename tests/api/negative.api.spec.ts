@@ -1,11 +1,12 @@
+import { faker } from '@faker-js/faker';
+
 import { expect, test } from '../../src/fixtures/index.js';
 
-import { requiredEnvironmentValue } from '../../src/config/env.js';
-
+// An unknown email keeps failed attempts from locking the shared customer account.
 test('invalid credentials return an API error @api @regression', async ({ authApi }) => {
-  await expect(
-    authApi.login(requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'), 'invalid-password'),
-  ).rejects.toMatchObject({ status: 401 });
+  await expect(authApi.login(faker.internet.email(), 'invalid-password')).rejects.toMatchObject({
+    status: 401,
+  });
 });
 
 test('unknown product IDs return not found @api @regression', async ({ productsApi }) => {

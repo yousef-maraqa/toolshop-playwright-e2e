@@ -2,12 +2,11 @@ name: CI
 
 on:
   push:
+    branches: [master]
   pull_request:
 
 permissions:
   contents: read
-  pages: write
-  id-token: write
 
 env:
   AUTH_ROLES: admin,customer
@@ -73,7 +72,7 @@ jobs:
   report:
     name: Merge and publish report
     needs: e2e
-    if: always()
+    if: ${{ !cancelled() && needs.e2e.result != 'skipped' }}
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v5
@@ -95,8 +94,11 @@ jobs:
   deploy:
     name: Deploy HTML report
     needs: report
-    if: always() && needs.report.result == 'success'
+    if: ${{ !cancelled() && needs.report.result == 'success' && github.event_name == 'push' && github.ref == 'refs/heads/master' }}
     runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
     environment:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
