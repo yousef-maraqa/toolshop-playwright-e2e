@@ -9,3 +9,12 @@ export const loginResponseSchema = z
   .loose();
 
 export type LoginResponse = z.infer<typeof loginResponseSchema>;
+
+export const registerResponseSchema = z
+  .object({
+    id: z.string(),
+    email: z.string(),
+  })
+  .loose();
+
+export type RegisterResponse = z.infer<typeof registerResponseSchema>;

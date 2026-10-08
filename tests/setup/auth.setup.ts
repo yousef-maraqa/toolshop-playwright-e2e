@@ -4,19 +4,22 @@ import { AuthApi } from '../../src/api/AuthApi.js';
 import { authStateFiles } from '../../src/config/auth.js';
 import { requiredEnvironmentValue } from '../../src/config/env.js';
 import { currentEnvironment } from '../../src/config/environments.js';
+import { readCustomerCredentials, type TestCredentials } from '../../src/config/testAccount.js';
 
 const roles = [
   {
     name: 'admin',
-    emailVariable: 'TEST_ADMIN_EMAIL',
-    passwordVariable: 'TEST_ADMIN_PASSWORD',
     stateFile: authStateFiles.admin,
+    credentials: (): TestCredentials => ({
+      email: requiredEnvironmentValue('TEST_ADMIN_EMAIL'),
+      password: requiredEnvironmentValue('TEST_ADMIN_PASSWORD'),
+    }),
   },
   {
     name: 'customer',
-    emailVariable: 'TEST_CUSTOMER_EMAIL',
-    passwordVariable: 'TEST_CUSTOMER_PASSWORD',
     stateFile: authStateFiles.customer,
+    // Registered fresh per run by global setup; cannot be locked out.
+    credentials: (): TestCredentials => readCustomerCredentials(),
   },
 ] as const;
 
@@ -32,10 +35,8 @@ if (selectedRoles.length === 0) {
 for (const role of selectedRoles) {
   setup(`${role.name} authentication`, async ({ page, request }) => {
     const authApi = new AuthApi(request, currentEnvironment.apiUrl);
-    const login = await authApi.login(
-      requiredEnvironmentValue(role.emailVariable),
-      requiredEnvironmentValue(role.passwordVariable),
-    );
+    const { email, password } = role.credentials();
+    const login = await authApi.login(email, password);
     expect(login.access_token).toBeTruthy();
 
     await page.goto('/');

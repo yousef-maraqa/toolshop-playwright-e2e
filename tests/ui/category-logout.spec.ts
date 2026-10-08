@@ -1,5 +1,5 @@
 import { expect, test } from '../../src/fixtures/index.js';
-import { requiredEnvironmentValue } from '../../src/config/env.js';
+import { readCustomerCredentials } from '../../src/config/testAccount.js';
 
 test('catalog category navigation opens the category view @ui @regression', async ({
   page,
@@ -27,11 +27,9 @@ test.describe('isolated logout', () => {
     loginPage,
     accountPage,
   }) => {
+    const customer = readCustomerCredentials();
     await loginPage.goto();
-    await loginPage.login(
-      requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'),
-      requiredEnvironmentValue('TEST_CUSTOMER_PASSWORD'),
-    );
+    await loginPage.login(customer.email, customer.password);
     await accountPage.goto();
     await accountPage.navBar.logout();
 

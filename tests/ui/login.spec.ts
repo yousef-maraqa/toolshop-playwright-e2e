@@ -1,16 +1,14 @@
 import { faker } from '@faker-js/faker';
 
 import { expect, test } from '../../src/fixtures/index.js';
-import { requiredEnvironmentValue } from '../../src/config/env.js';
+import { readCustomerCredentials } from '../../src/config/testAccount.js';
 
 test.use({ storageState: { cookies: [], origins: [] } });
 
 test('customer can log in through the UI @ui @regression', async ({ loginPage }) => {
+  const customer = readCustomerCredentials();
   await loginPage.goto();
-  await loginPage.login(
-    requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'),
-    requiredEnvironmentValue('TEST_CUSTOMER_PASSWORD'),
-  );
+  await loginPage.login(customer.email, customer.password);
 
   await expect(loginPage.page).toHaveURL(/account/);
 });
