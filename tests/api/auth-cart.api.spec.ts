@@ -1,5 +1,5 @@
 import { expect, test } from '../../src/fixtures/index.js';
-import { requiredEnvironmentValue } from '../../src/config/env.js';
+import { readCustomerCredentials } from '../../src/config/testAccount.js';
 import { deleteCartIfPresent } from '../../src/utils/cleanup.js';
 
 test('authenticated API supports login and cart lifecycle @api @regression', async ({
@@ -7,10 +7,8 @@ test('authenticated API supports login and cart lifecycle @api @regression', asy
   productsApi,
   cartApi,
 }) => {
-  const login = await authApi.login(
-    requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'),
-    requiredEnvironmentValue('TEST_CUSTOMER_PASSWORD'),
-  );
+  const customer = readCustomerCredentials();
+  const login = await authApi.login(customer.email, customer.password);
   expect(login.access_token).toBeTruthy();
   const product = (await productsApi.list({ page: 1 })).data[0];
   const cart = await cartApi.createCart();

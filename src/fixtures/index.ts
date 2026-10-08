@@ -7,6 +7,7 @@ import { CategoriesApi } from '../api/CategoriesApi.js';
 import { ProductsApi } from '../api/ProductsApi.js';
 import { requiredEnvironmentValue } from '../config/env.js';
 import { currentEnvironment } from '../config/environments.js';
+import { readCustomerCredentials } from '../config/testAccount.js';
 import { AccountPage } from '../pages/AccountPage.js';
 import { CartPage } from '../pages/CartPage.js';
 import { CheckoutPage } from '../pages/CheckoutPage.js';
@@ -51,10 +52,8 @@ export const test = base.extend<ToolshopFixtures, ToolshopWorkerFixtures>({
         baseURL: currentEnvironment.apiUrl,
       });
       const authApi = new AuthApi(workerRequest, currentEnvironment.apiUrl);
-      const login = await authApi.login(
-        requiredEnvironmentValue('TEST_CUSTOMER_EMAIL'),
-        requiredEnvironmentValue('TEST_CUSTOMER_PASSWORD'),
-      );
+      const customer = readCustomerCredentials();
+      const login = await authApi.login(customer.email, customer.password);
 
       await use(new CartApi(workerRequest, currentEnvironment.apiUrl, login.access_token));
       await workerRequest.dispose();
