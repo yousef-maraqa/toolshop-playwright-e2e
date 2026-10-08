@@ -3,7 +3,10 @@ import { defineConfig, devices } from '@playwright/test';
 import { authStateFiles } from './src/config/auth.js';
 import { currentEnvironment } from './src/config/environments.js';
 
-const adminEnabled = (process.env.AUTH_ROLES ?? 'customer').split(',').includes('admin');
+const adminEnabled = (process.env.AUTH_ROLES ?? 'customer')
+  .split(',')
+  .map((role) => role.trim())
+  .includes('admin');
 
 export default defineConfig({
   testDir: './tests',

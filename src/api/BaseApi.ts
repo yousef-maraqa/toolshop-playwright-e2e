@@ -1,5 +1,5 @@
 import type { APIRequestContext, APIResponse } from '@playwright/test';
-import { z, type ZodType } from 'zod';
+import type { ZodType } from 'zod';
 
 import { errorResponseSchema } from './schemas/error.js';
 
@@ -96,5 +96,3 @@ export abstract class BaseApi {
     return parsed.success ? parsed.data : body;
   }
 }
-
-export const emptyResponseSchema = z.undefined();
