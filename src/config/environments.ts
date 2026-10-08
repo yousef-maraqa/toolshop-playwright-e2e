@@ -25,7 +25,7 @@ export type EnvironmentName = keyof typeof environments;
 
 const configuredEnvironment = process.env.ENV ?? 'prod';
 
-if (!(configuredEnvironment in environments)) {
+if (!Object.hasOwn(environments, configuredEnvironment)) {
   throw new Error(
     `Unsupported ENV "${configuredEnvironment}". Expected one of: ${Object.keys(environments).join(', ')}`,
   );
